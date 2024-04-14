@@ -11,21 +11,21 @@ knitr::opts_chunk$set(echo = TRUE)
 Log in the **BGI portal** (<https://customer.genomics.cn/customer-self/login#/homepage>)  with the lab account and password. After logging in, click the part in red circle in the left column as shown in the screenshot below:
 
 ```{r, echo=FALSE, out.width = '68%', fig.align='center'}
-knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/0_BGI_choosefolder.jpg")
+knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/Module1_files/figure-gfm/0_BGI_choosefolder.jpg")
 ```
 <br>
 Then choose the folder of your Sanger sequencing job here.
 <br>
 <br>
 ```{r, echo=FALSE, out.width = '68%', fig.align='center'}
-knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/1_BGI_choosefolder2.jpg")
+knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/Module1_files/figure-gfm/1_BGI_choosefolder2.jpg")
 ```
 <br>
 Samples submitted in the job are listed here. Check the boxes on the left column for the samples you wish to download. File download could take a bit of time for a large batch of samples. The sequencing results come as a `.zip` folder in your designated directory. Note that the data is available for download within 6 months after release, timely retreival of data is suggested to avoid data loss.
 <br>
 <br>
 ```{r, echo=FALSE, out.width = '68%', fig.align='center'}
-knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/2_BGI_choosefile.jpg")
+knitr::include_graphics("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/Module1_files/figure-gfm/2_BGI_choosefile.jpg")
 ```
 <br>
 

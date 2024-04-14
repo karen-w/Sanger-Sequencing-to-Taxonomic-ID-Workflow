@@ -8,17 +8,17 @@ Log in the **BGI portal**
 lab account and password. After logging in, click the part in red circle
 in the left column as shown in the screenshot below:
 
-<img src="0_BGI_choosefolder.jpg" width="68%" style="display: block; margin: auto;" />
+<img src="Module1_files/figure-gfm/0_BGI_choosefolder.jpg" width="68%" style="display: block; margin: auto;" />
 <br> Then choose the folder of your Sanger sequencing job here. <br>
 <br>
-<img src="1_BGI_choosefolder2.jpg" width="68%" style="display: block; margin: auto;" />
+<img src="Module1_files/figure-gfm/1_BGI_choosefolder2.jpg" width="68%" style="display: block; margin: auto;" />
 <br> Samples submitted in the job are listed here. Check the boxes on
 the left column for the samples you wish to download. File download
 could take a bit of time for a large batch of samples. The sequencing
 results come as a `.zip` folder in your designated directory. Note that
 the data is available for download within 6 months after release, timely
 retreival of data is suggested to avoid data loss. <br> <br>
-<img src="2_BGI_choosefile.jpg" width="68%" style="display: block; margin: auto;" />
+<img src="Module1_files/figure-gfm/2_BGI_choosefile.jpg" width="68%" style="display: block; margin: auto;" />
 <br>
 
 ## 2. Set working directory in R
@@ -68,9 +68,8 @@ School](https://dnacore.mgh.harvard.edu/new-cgi-bin/site/pages/sequencing_pages/
 
 Now focus on the non-problematic samples.
 
-    ## [1] "0_BGI_choosefolder.jpg"  "1_BGI_choosefolder2.jpg"
-    ## [3] "2_BGI_choosefile.jpg"    "example_trim_df.Rdata"  
-    ## [5] "Module1.Rmd"             "Module2.Rmd"
+    ## [1] "example_trim_df.Rdata" "Module1.md"            "Module1.Rmd"          
+    ## [4] "Module2.md"            "Module2.Rmd"           "README.md"
 
 There are 2 types of files for each sample: **`.ab1`** and **`.seq`**.
 <br> **`.ab1`** contains the chromatogram and **`.seq`** contains the
