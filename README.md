@@ -1,0 +1,34 @@
+Sanger Sequencing to Taxonomic ID Workflow
+================
+
+This is a demonstration of my workflow for a typical Sanger sequencing
+of DNA amplicons to taxonomic ID task using various tools and platforms,
+mainly in the R environment. The workflow is broken down into several
+modules for clarity:
+
+### Module 1 - Retrieving and organizing files
+
+This module involves how to retrieve sequencing results from BGI which
+is the service provider our lab uses, and how to rename and group files
+according to the needs of your project. You may skip this part if you
+have already organized your files in a designated folder.
+
+R scripts in this module: `1_rename_files.R`, `2_new_folder.R`
+
+### Module 2 - Trimming bases of low quality from 5’ and 3’ ends
+
+In this module, I will introduce the some tools and functions that I use
+to trim away low quality parts of the sequences based on the raw
+chromatograms in a semi-automated way (some manual check-up is suggested
+for fine-tuning some parameters to achieve better results), then export
+a .fasta file containing the trimmed sequences.
+
+R scripts in this module: `3_trim_ab1.R`, `4_export_trim_fasta.R`
+
+### Module 3 - BLAST and organizing output files
+
+(under construction)
+
+### Module 4 - Multiple alignment and report sequences at designated region in the alignment
+
+(under construction)

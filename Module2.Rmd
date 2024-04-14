@@ -1,0 +1,85 @@
+---
+title: "Module 2 - Trimming bases of low quality from 5’ and 3’ ends"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+First, we can first load the packages required in the subsequent steps.
+
+```{r, eval = TRUE, message=FALSE}
+library(tidyverse) # also in Module 1
+library(data.table) # also in Module 1
+library(sangerseqR) # also in Module 1
+library(Biostrings)
+```
+
+## 1. Trimming 5' and 3' ends of sequences
+```{r, eval = TRUE, include = FALSE}
+dir <- "D:/MSL Projects/ECF Seaslug/BGI_Batch1_20240326/Rename/16S"
+#setwd(dir)
+file_abi <- list.files(dir, full.names = TRUE) %>% .[which(str_detect(., "ab1"))] %>% .[1]
+chrom <- readsangerseq(file_abi); print(chrom)
+```
+```{r, eval = TRUE}
+chromatogram(chrom, width = 100, height = 2, showcalls = "primary")
+```
+
+From the above chromatogram, you may notice that there are bases of lower quality which you may need to trim away. The function `gen_trim_tbl()` takes a few arguments to determine which position to trim: 
+(i) `basecall_ratio`: cutoff ratio for separating signal and noise in the `makeBaseCalls()` function in package `sangerseqR`, in which the ratio is relative to maximum peak in basecall window. The default value is set at 0.33 as in the original function.
+
+(ii) `trimmable_5`: the maximum number of base allowed to be trimmed from 5' end with respect to sequence length, default = 0.1, i.e. if sequence length = 400, the maximum number of bases to be trimmed from 5' end = 40.
+
+(iii) `trimmable_3`: the maximum number of base allowed to be trimmed from 3' end with respect to sequence length, default = 0.05.
+
+(iv) `low_peak_pct`: the default value is 0.1 which corresponds to the 10th percentile of the maximum peak amplitudes for each basecall window, positions at which the amplitude of peak is lower than that value is considered to be of lower quality. 
+
+(v) `output_chrom_name`: it is the name of file to save to if you opt to output the chromatogram as PDF. Default is set to `NULL` so that no chromatograms will be generated.
+
+The following is an example showing the output data frame with the suggested number of bases to be trimmed from 5' and 3' ends (`trim5` and `trim3`).
+
+```{r, eval = FALSE}
+source("3_trim_ab1.R")
+gen_trim_tbl("NUD006_16S.ab1")
+```
+```{r, eval = TRUE, include=FALSE}
+source("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/R_script/3_trim_ab1.R")
+df <- gen_trim_tbl("D:/MSL Projects/ECF Seaslug/BGI_Batch1_20240326/Rename/16S/NUD006_16S.ab1")
+```
+```{r echo = FALSE, results = 'axis'}
+knitr::kable(df)
+```
+
+If you opt to output a chromatogram, this would be how it looks. Regions crossed in red would be trimmed. You can evaluate if the trimming regions are reasonable and make changes if necessary.
+```{r, eval = TRUE, echo=FALSE}
+chromatogram(readsangerseq("D:/MSL Projects/ECF Seaslug/BGI_Batch1_20240326/Rename/16S/NUD006_16S.ab1") %>% makeBaseCalls(),
+             width = 100, height = 2, showcalls = "primary",
+             trim5 = 33, trim3 = 17, showtrim = TRUE)
+```
+
+For a batch of samples, you can use `map()` function and a data frame will be generated.
+```{r, eval = FALSE}
+source("3_trim_ab1.R")
+trim_df <- map(file_names, gen_trim_tbl) %>% rbindlist()
+```
+```{r, eval = TRUE, echo = FALSE}
+map(list.files(dir, full.names = TRUE) %>% .[which(str_detect(., "ab1"))], gen_trim_tbl) %>% 
+  rbindlist() %>% head() %>% knitr::kable()
+```
+
+## 2. Output .fasta file of trimmed sequences
+
+After finalizing the number of bases to be trimmed at both 5' and 3' ends and updating the table from the above step (if necessary), we can now export a `.fasta` file containing the trimmed sequences with the function `export_fa_fm_tbl()`. This function read a table as shown in the example above, with column names `file` which contains the file path of the `.ab1` files, `trim5` and `trim3` containing the number of bases to be trimmed from the 5' and 3' ends respectively.
+
+```{r, eval = FALSE}
+source("4_export_trim_fasta.R")
+export_fa_fm_tbl(trim_df, "trimmed_seq.fasta")
+```
+```{r, eval = TRUE, echo = FALSE}
+source("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/R_script/4_export_trim_fasta.R")
+load("D:/MSL Miscellaneous/20240408 BGI Pipeline Github/example_trim_df.Rdata")
+export_fa_fm_tbl(trim_df)
+```
