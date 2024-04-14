@@ -21,10 +21,12 @@ chromatogram(chrom, width = 100, height = 2, showcalls = "primary")
 From the above chromatogram, you may notice that there are bases of
 lower quality which you may need to trim away. The function
 `gen_trim_tbl()` takes a few arguments to determine which position to
-trim: (i) `basecall_ratio`: cutoff ratio for separating signal and noise
-in the `makeBaseCalls()` function in package `sangerseqR`, in which the
-ratio is relative to maximum peak in basecall window. The default value
-is set at 0.33 as in the original function.
+trim: <br>
+
+1)  `basecall_ratio`: cutoff ratio for separating signal and noise in
+    the `makeBaseCalls()` function in package `sangerseqR`, in which the
+    ratio is relative to maximum peak in basecall window. The default
+    value is set at 0.33 as in the original function.
 
 2)  `trimmable_5`: the maximum number of base allowed to be trimmed from
     5’ end with respect to sequence length, default = 0.1, i.e. if
