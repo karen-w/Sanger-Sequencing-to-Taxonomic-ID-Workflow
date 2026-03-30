@@ -27,7 +27,9 @@ R scripts in this module: `3_trim_ab1.R`, `4_export_trim_fasta.R`
 
 ### Module 3 - BLAST and organizing output files
 
-(under construction)
+This module starts from the trimmed .fasta exported in Module 2 and performs a megablast search against NCBI, then exports a table of BLAST hits with taxonomy (organism + taxid).
+
+R scripts in this module: `5_megablast_fasta.R`
 
 ### Module 4 - Multiple alignment and report sequences at designated region in the alignment
 
