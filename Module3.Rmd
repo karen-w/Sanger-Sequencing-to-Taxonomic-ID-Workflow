@@ -1,0 +1,114 @@
+---
+title: "Module 3 - BLAST (megablast) and organizing output"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This module starts from the trimmed `.fasta` exported in **Module 2** and performs a **megablast** search against NCBI, then exports a table of BLAST hits with **taxonomy (organism + taxid)**.
+
+## 1. Load packages
+
+```{r, eval=TRUE, message=FALSE}
+library(tidyverse)
+```
+
+The BLAST function uses:
+
+- `Biostrings` to read FASTA
+- `httr` to talk to NCBI BLAST URL API
+- `rentrez` to retrieve taxonomy metadata from NCBI (optional but recommended)
+
+```{r, eval=FALSE}
+# Install if needed
+install.packages("httr")
+install.packages("rentrez")
+install.packages("xml2")   # optional (for lineage best-effort)
+BiocManager::install("Biostrings")
+```
+
+## 2. Run megablast from R
+
+This pipeline uses the script `R_script/5_megablast_fasta.R`.
+
+```{r, eval=FALSE}
+setwd("D:/MSL Miscellaneous/20240408 BGI Pipeline Github")
+source("R_script/5_megablast_fasta.R")
+```
+
+### Input FASTA
+
+Use the example FASTA shipped with this repo:
+
+```{r, eval=FALSE}
+fasta_path <- "example_data/16S_trimmed_seq.fasta"
+```
+
+Or use your own FASTA produced in Module 2 (replace the path with your file):
+
+```{r, eval=FALSE}
+fasta_path <- "path/to/your/trimmed_sequences.fasta"
+```
+
+### Output files
+
+There are **two outputs**:
+
+- A **per-query temporary folder** containing one CSV per query sequence
+- A **final merged CSV** containing all queries
+
+```{r, eval=FALSE}
+results <- run_megablast(
+  fasta_path = fasta_path,
+  output_path = "example_data/16S_megablast_results_full.csv",
+  # NCBI requests an email/tool name for automated usage
+  email = "your_email@example.com",
+  tool = "seaslug_barcoding",
+  hitlist_size = 50,
+  include_taxonomy = TRUE,
+  # temp files will be written here (default is dirname(output_path)/megablast_temp)
+  temp_dir = "example_data/megablast_temp"
+)
+```
+
+The returned `results` object is a data frame with (at minimum):
+
+- `query_id`
+- `subject_id` (accession.version)
+- alignment statistics (`pident`, `length`, `evalue`, `bitscore`, etc.)
+- taxonomy columns (when `include_taxonomy = TRUE`): `organism`, `taxid` (and `lineage` when available)
+
+## 3. Notes on NCBI usage and runtime
+
+- **NCBI rate limits**: the script polls BLAST jobs at most about once per minute per request ID (RID), and taxonomy queries are throttled with `Sys.sleep()` to be polite to NCBI servers.
+- **Long runs**: BLAST for many sequences can take a long time. Writing per-query results into `temp_dir` ensures you keep partial results even if the run is interrupted.
+- **Taxonomy completeness**: taxonomy is derived from NCBI `nuccore` summaries. Some accessions can fail intermittently; the script performs a **second-pass fallback** using `entrez_search()` (accession → UID) then `entrez_summary()` until no new matches (bounded rounds).
+
+## 4. Troubleshooting
+
+### BLAST polling looks stuck
+
+If you see a RID and want to check it manually:
+
+```{r, eval=FALSE}
+# Replace RID with your value
+# https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Get&RID=YOUR_RID
+```
+
+### Parse failures
+
+If you suspect NCBI returned an unexpected format, re-run with:
+
+```{r, eval=FALSE}
+results <- run_megablast(
+  fasta_path = fasta_path,
+  output_path = "example_data/16S_megablast_results_full.csv",
+  email = "your_email@example.com",
+  debug_save_raw = TRUE
+)
+```
+
+This writes the raw response for debugging when parsing fails.
+
